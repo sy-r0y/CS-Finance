@@ -8,7 +8,7 @@ define("DB_NAME","finance");
 
 
 // Include the "funtion.php" to have access to "predefined" functions.
-require("function.php");
+require("../lib/function.php");
 
 open_db_conn();  // This is a function that is defined in the function.php.
 
