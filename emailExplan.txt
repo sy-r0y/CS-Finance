@@ -1,0 +1,101 @@
+[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b
+
+
+
+function validateEmail(email) { 
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\
+".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA
+-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+} 
+
+
+
+
+Explanation:
+
+The argument to this method is the email address you want to validate.
+In the method body we define a variable (‘emailPattern’) and assign a regular expression to it.
+
+Email format: The regular expression for email is
+
+/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+
+To understand the regular expression we will divide it into smaller components:
+
+/^[a-zA-Z0-9._-]+:  Means that the email address must begin with alpha-numeric characters (both lowercase and uppercase characters are allowed). It may have periods,underscores and hyphens.
+
+
+@:   There must be a ‘@’ symbol after initial characters.
+
+[a-zA-Z0-9.-]+: After the ‘@’ sign there must be some alpha-numeric characters. It can also contain period (‘.’) and and hyphens(‘-’).
+
+\.: After the second group of characters there must be a period (‘.’). This is to separate domain and subdomain names.
+
+[a-zA-Z]{2,4}$/: Finally, the email address must end with two to four alphabets. Having a-z and A-Z means that both lowercase and uppercase letters are allowed.
+{2,4} indicates the minimum and maximum number of characters. This will allow domain names with 2, 3 and 4 characters e.g.; us, tx, org, com, net, wxyz).
+
+
+On the final line we call test method for our regular expression and pass the email address as input. If the input email address satisfies our regular expression, ‘test’ will return true otherwise it will return false. We return this value to the calling method.
+
+You can call this method whenever you want to validate email address.
+
+
+(^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+([.-]?[a-zA-Z0-9]+)?([\.]{1}[a-zA-Z]{2,4}){1,4}$) --> MULTIPLE TLD's
+
+
+ATENTION: this regex has a bug. The right syntax is:
+/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[\.]{1}[a-zA-Z]{2,4}$/
+
+Without this modification a string like name@yahoo is a valid emalil address.
+
+for Confused: this function return true if the user type a valid email address (name@domain.extension) and false if not.
+You can call the function in this way:
+var valid_email=validateEmail(document.getElementById['field_id'].value);
+if(valid_email){ [your code] }else{ [your code] }
+This validation is for you users, but you must do another validation on server side when you save your data.
+
+
+Actually Maserias’ modification works really well except that it accepts abc@.xyz.com. “@.” shouldn’t be together. I made a minor modification to it:
+/^[a-zA-Z0-9._-]+@[a-zA-Z0-9][a-zA-Z0-9.-]+[\.]{1}[a-zA-Z]{2,4}$/
+
+So this checks to see that the domain starts with alphanumeric characters. The credit however goes to Meserias!
+
+
+here’s the regex modified to accept + signs after the first character of the address:
+
+/^[a-z0-9._\-][a-z0-9._\-\+]*@[a-z0-9][a-z0-9.\-]*[\.]{1}[a-z]{2,4}$/i
+
+I also shortened it by adding i modifier at end, so don’t need to specify A-Z for uppercase letters. The regex still has false positives, no doubt, but no false negatives for + signs.
+
+
+
+Does Tank’s address a+anything@gmail.com? It did not seem too. Jerry mentioned this.
+
+This is a feature at gmail, add a “+(anything you pick)” before the @ on your regular gmail address, and the email will still be delivered to you, but you can send it to special filters.
+
+Modifying Tanks to this
+/^[a-zA-Z0-9._\+-]+@[a-zA-Z0-9]+([.-]?[a-zA-Z0-9]+)?([\.]{1}[a-zA-Z]{2,4}){1,4}$/;
+
+
+
+
+To end on “@gmail.com” just use this as final part:
+
+/\@gamil\.com$/
+
+If want to check anything before @ add checks at begining.
+
+This one will only allow leters, numbers and ‘_’ and ‘-’ as left part of @ and must be on gmail.com
+
+/^[0-9A-Za-z\_\-]+\@gamil\.com$/
+
+An this other one is also to accept dot on user part, but not at start neither near the @:
+
+/^[0-9A-Za-z\_\-]([\.][0-9A-Za-z\_\-]+)*\@gamil\.com$/
+
+Hope helps!
+
+
+
+
