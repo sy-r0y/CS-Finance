@@ -2,7 +2,6 @@
 
 require("../includes/config2.php");
 
-//print_r($_SESSION['id']);
 if((!isset($_SESSION['id'])) || (empty($_SESSION['id'])))
   {
     // Since user NOT logged in => redirect user to the index.php

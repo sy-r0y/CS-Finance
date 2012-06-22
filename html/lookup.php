@@ -54,19 +54,14 @@ function getDetail()
 
   // This funtion will perfomr some validation(on the symbol entered)
   // Also it will take the symbol value-> and pass it through AJAX to lookup2.php
-
   /* Should we use UTF-8 encoding OR simply pass the      * symbol information as text.
   */
   var symbol= document.getElementById('symbltxt').value;
-  //  var symbol= encodeURIComponent(document.getElementById('symbltxt').value);
-  
 
   var regEx1=/^\^/;
 
   /* Reject $symbol that contain commas.*/
   var regEx2=/,/;
-
-  //  var url="../etc/lookup2.php";
 
   if((regEx1.test(symbol)) || (regEx2.test(symbol)))
     {
@@ -77,19 +72,8 @@ function getDetail()
     {
       alert("Inside else- getDetail()");
 
-      //      var email=encodeURIComponent(document.getElementById("uname").value);
-      //      var pass=encodeURIComponent(document.getElementById("pswd").value);    
-      //      var postData="uname="+email+"&pswd="+pass;
-      //      var url="login.php"; 
-      //      postData1=encodeURIComponent(postData);
-      //      var url="login.php?uname="+email+"&pswd="+pass;
-      
-      //      YAHOO.util.Connect.initHeader("Content-Type","text/html; charset=utf-8");
-      //      YAHOO.util.Connect.asyncRequest('POST',url,{success:handler},postData);
-      
-      //      var url="../etc/lookup2.php";
-      var url="../etc/lookup2.php";  /* AJAX goes CRAZY if I do relative paths with /  or ./ or ../ so ==> GO DOWN THE
-                                     DIRECTORY STRUCTURE INSTEAD OF WORKING UP THE STRUCTURE. */
+      var url="../etc/lookup2.php"; 
+                                    
       var postData="symboltxt="+symbol;
       document.getElementById('symblspan').style.color="black";
       YAHOO.util.Connect.initHeader("Content-Type","text/html;charset=utf-8");
@@ -100,16 +84,8 @@ function getDetail()
 } //getDetail() ends here.
 
 
-/// ***IMPORTANT***==>> Cannot leave any funtion without its purpose define clearly already, if the funtion is only there withouut doing anything ==>> JS goes SUPER MAD and does crazy shit !!!.
-
-
-
-/* ***IMPORTANT*** Do not leave the handler(o) (with the object) without the body==>> javascript starts behaving * crazily !!!.
- */
-
 function handler(o)
 {
-
    /* handler() would simply check whether the ajax response received via lookup2.php is appropriate
    * and then simply display the results of the result in the table inside <div id=detail> (after setting its 
    * display property to block).
@@ -117,8 +93,7 @@ function handler(o)
   alert("Inside handler()");
 
   var response=eval("("+o.responseText+")");
-  //  var response=eval("("+o.responseText+")");
-  
+
   //Now that we have our JSON in the response object => we can access the fields using Dot Notation.
 
   if(response.noerror)
@@ -146,7 +121,6 @@ function handler(o)
   else
     {
       //Display an error message.
-      //      alert("ErrorMessage");
       document.getElementById("errormsg").style.display="block";
       document.getElementById("errormsg").style.color="red";
       document.getElementById("errormsg2").innerHTML="No Company with such symbol exists...!!!";
@@ -163,7 +137,7 @@ function buyStock()
    * buy.php will process it & respond with whether the transactin was successful or not.
    * If transaction was successful ==>> display to the user the message describing the transaction.
    * If transaction was not successful ==>> tell the user this as an error message.
-   * CCCCOOOOOOLLLL!!!!!
+   * COOOLLL!!!!!
    */
   alert("Inside buyStock()");
   var usrinput=true;
@@ -207,16 +181,11 @@ function buyStock()
       document.getElementById("qtyspan").style.color="black";
       document.getElementById("label-span").style.color="black";
       document.getElementById("qtyerror").style.display="none";
-	//      document.getElementById("qtyerror").innerHTML="";
-	//      document.getElementById("qtyerror").style.color="red";
 
       var stockamt=encodeURIComponent(document.getElementById('qty').value);
-      //      var postData=document.getElementById("qty").value;
 
-      //      var url="../etc/buy.php";
+      var url="../etc/buy.php";
 
-      var url="../etc/buy.php";  // Again take care of AJAX'S relative path PROBLEMS !!!
-      //      var postData="stockamt="+stockamt+"&price="+price+"&symbol="+stocksymbol; // COOL !!!
       var postData="stockamt="+stockamt+"&price="+price+"&symbol="+stocksymbol;
       YAHOO.util.Connect.initHeader("Content-Type","text/html; charset=utf-8");
       YAHOO.util.Connect.asyncRequest('POST',url,{success:handler2},postData); 
@@ -239,41 +208,24 @@ function handler2(d)
 {
   //handler2() will take care of the AJAX response that buy.php will send back.
   alert("handler2()- buyStock()");
-  /*  FOR REFERENCE PURPOSE
-class Flag
-{
-  public $symbolvalid=false;
-  public $qtyvalid=false;
-  public $pricevalid=false;
-  public $balsufficient=false;
-  public $noerror=false;
-}
-  */
   var response=eval("("+d.responseText+")");
   alert(response.qtyvalid);
   if(response.noerror)
     {
-      alert("Inside handler-buyStock() hahaha");
-
       var qty=document.getElementById('qty').value;
       var syml=document.getElementById('symbltxt').value;
-      var rate=document.getElementById('td3').value;
+      //      var =document.getElementById('td3').value;
       var totalamt=qty*price;
-      //The <div id="bought"> wold be manipulated.
       document.getElementById("detail").style.display="none";
-      //      document.getElementById("");
       document.getElementById("bought").style.display="block";
       document.getElementById("qty2").innerHTML=qty; 
-      document.getElementById("qty3").innerHTML=symbl;
-      document.getElementById("qty4").innerHTML=rate;
+      document.getElementById("qty3").innerHTML=syml;
+      document.getElementById("qty4").innerHTML=price;
       document.getElementById("qty5").innerHTML=totalamt;
     }
   else
     {
-      //The <span id="errormsg> and <div id="errormsg2"> would be manipulated.
-
       alert("FAILED");
-      
     }
 }
 </script> 
@@ -335,9 +287,9 @@ class Flag
  <table>
  <tbody>
  <tr> <td> You bought </td> <td><span id="qty2" name="qty2"></span></td></tr>
- <tr> <td> <label for="qty3"> Shares Of </label></td><td><div id="qty3" name="qty3"></span></td></tr>
- <tr> <td> at the rate of</td><td><div id="qty4" name="qty4"></span></td></tr>
- <tr> <td> for a total amounting to :</td> <td><div id="qty2" name="qty2"></span></td></tr>
+ <tr> <td> <label for="qty3"> Shares Of </label></td><td><div id="qty3" name="qty3"></div></td></tr>
+ <tr> <td> at the rate of</td><td><div id="qty4" name="qty4"></div></td></tr>
+ <tr> <td> for a total amounting to :</td> <td><div id="qty5" name="qty5"></div></td></tr>
  </tbody>
  </table>
 </div> <!-- Div bought Ends -->

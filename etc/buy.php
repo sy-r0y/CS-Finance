@@ -1,3 +1,4 @@
+
 <?php
 /* This page will act as the interceptor to the lookup.php's module "buyStock()"
  * lookup.php will issue an AJAX request that will transfer the "symbol" + "stockamt" + ""
@@ -18,33 +19,18 @@ class Flag
 }
 
 $flag=new Flag(); // An instance of the class Flag.
-
 $usrid=$_SESSION['id'];// Get the user's id
-mysqli_set_charset($con,"utf8");
+//mysqli_set_charset($con,"utf8");
 mysqli_autocommit($con,FALSE);
-
 header("Content-type:application/json");
-
-$symbol=mysqli_real_escape_string($_POST['symbol']);// For previous database record checking						       OR new record insertion
+$symbol=mysqli_real_escape_string($con,$_POST['symbol']);// For previous database record checking						       OR new record insertion
 						      
-$stockamt=mysqli_real_escape_string($_POST['stockamt']); // How much user is buying.
-$price=mysqli_real_escape_string($_POST['price']); // The stock price which user viewed.
+$stockamt=mysqli_real_escape_string($con,$_POST['stockamt']); // How much user is buying.
+$price=mysqli_real_escape_string($con,$_POST['price']); // The stock price which user viewed.
 
 $totalamt=($price)*($stockamt);
 $flag->totalamt=$totalamt;
 
-/*$symbol=mysqli_real_escape_string($con,$_GET['symbol']);  
-$stockamt=mysqli_real_escape_string($con,$_GET['stockamt']); 
-$price=mysqli_real_escape_string($con,$_GET['price']); 
-$totalamt=($price)*($stockamt);
-$flag->totalamt=$totalamt;
-*/
-/* Here, JUST TO BE SAFE, I, will sanitize every input parameters that I received via the POST requests
- * For that purpose, 
- *  1. I will do the regular expression test on the $symbol  
- *  2. Do the validity check on $stockamt 
- *  3. Make sure $price is a numerical term (either integer or floating point).
- */
 $regex='/^[a-z]{1,4}\.?[a-z]{1,2}$/i';
 $regex3='/^(0|[1-9][0-9]*)$/';
 $regex4='/^\d*\.?\d*$/'; // ?-> 0 or 1 times || * -> 0 or more times || ? -> 1 or more times
@@ -57,27 +43,24 @@ if(preg_match($regex,$symbol))
     if($validqty)
       {
 	$flag->qtyvalid=true;
-	
 	// Now check validity of $price(it should be only numerical number-integer or float).
-	
 	//	$regex4='/^\d*\.?\d*/';  // ?-> 0 or 1 times || *-> 0 or more times ||+-> 1 or more times
 
 	if($validprice=(preg_match($regex4,$price)))
 	  {
 	    $flag->pricevalid=true;
 	    // Now price is also valid=>> check balance, if sufficient= purchase stock
-
 	    $balance=getBalance($usrid);  //Get the balance of the user.
 	    $difference=$balance-$totalamt;
 	    if($difference<0)
-	      {
+	      {		
 		$flag->balsufficient=false;
 		$flag->noerror=false;
 	      }
 	    else
 	      {
 		$flag->balsufficient=true;
-		//Now debit the user's balance from portfolio.
+		//Now depriciate the user's balance from portfolio.
 		$sql="UPDATE portfolio SET balance='$difference' WHERE uid='$usrid'";
 		if((mysqli_query($con,$sql))==FALSE)
 		  {

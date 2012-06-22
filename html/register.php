@@ -8,13 +8,11 @@ require_once("../includes/config.php");
 
 if(isset($_SESSION['id']) || !empty($_SESSION['id']))
 	 {
-	   //Call the functin "redirect()" - redirect() is defined in the "function.php".
 	   redirect("portfolio.php");
 	   /* The argument passed here -"portfolio.php" is appended to already defined code inside the                      * redirect() and allows us to specify exactly where we want the redirection to end up.
 	   */    
 	   // Also we do not want for any of the rest of the code in this page to execute-> so we exit().
-
-	   //exit();
+	   exit();
 	 }
 //require("includes/header.php");  
 
@@ -51,14 +49,9 @@ function validate()
      var passinput=document.getElementById("passw").value;
      var passconfinput=document.getElementById("passconf").value;
 
-
-    // var unamerex=/.*(?=.{3})(?=.*\d)(?=.*[a-z]).*$/i;    // Allow only letter, numers,underscores and dots.
-
      var unamerex=/[a-z0-9._\-]{2,}$/i;
 
      var emailrex=/[a-z0-9._\-]+@[a-z0-9][a-z0-9.\-]*[\.]{1}[a-z]{2,4}$/i;
-
-     //        var passrg=/\W/;
 
      var passrex=/.*(?=.{6})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$/;
 
@@ -77,7 +70,6 @@ function validate()
      if((emailinput=="") || (!emailrex.test(emailinput)))
        {
 	 document.getElementById("second").style.color="red";
-	 //document.getElementById("email").focus();
 	 if(userinput)
 	   {
 	     document.getElementById("email").focus();
@@ -133,12 +125,9 @@ function validate()
 
 function register()
 {
-  //  alert("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
   var nameinp=encodeURIComponent(document.getElementById("username").value);
   var emailinp=encodeURIComponent(document.getElementById("email").value);
   var passinp=encodeURIComponent(document.getElementById("passw").value);
-  // var passconfinp=encodeURIComponent(document.getElementById("passconf").value);
-  
   var postData="username="+nameinp+"&email="+emailinp+"&passw="+passinp;
   var url="../etc/register2.php"; 
   
@@ -155,7 +144,6 @@ function handler(o)
   if(response.sanitized===false)
     {
       document.getElementById("error").innerHTML="INVALID FIELDS ENTERED";
-      //      alert("invalid login");
       document.getElementById("username").focus();
       
     }
@@ -163,13 +151,11 @@ function handler(o)
   else if(response.noconflict===false)
     {
       document.getElementById("error").innerHTML="Email Address Already Exists !!!";
-      //      alert("invalid login");
       document.getElementById("email").focus();
     }
   else if(response.insert===false)
     {
       document.getElementById("error").innerHTML="Could not Insert into the Database...Please try again later";
-      //      alert("invalid login");
       document.getElementById("email").focus();
     }
   else
@@ -180,8 +166,6 @@ function handler(o)
     }
   
 }
-
-
 </script>
 </head>
 <body>
