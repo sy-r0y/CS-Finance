@@ -17,7 +17,6 @@ class Flag
   public $noerror=false;
   public $totalamt;
 }
-
 $flag=new Flag(); // An instance of the class Flag.
 $usrid=$_SESSION['id'];// Get the user's id
 //mysqli_set_charset($con,"utf8");
@@ -26,7 +25,7 @@ header("Content-type:application/json");
 $symbol=mysqli_real_escape_string($con,$_POST['symbol']);// For previous database record checking						       OR new record insertion
 						      
 $stockamt=mysqli_real_escape_string($con,$_POST['stockamt']); // How much user is buying.
-$price=mysqli_real_escape_string($con,$_POST['price']); // The stock price which user viewed.
+$price=mysqli_real_escape_string($con,$_POST['price']); // The stock price which user viewed./
 
 $totalamt=($price)*($stockamt);
 $flag->totalamt=$totalamt;
@@ -61,7 +60,7 @@ if(preg_match($regex,$symbol))
 	      {
 		$flag->balsufficient=true;
 		//Now depriciate the user's balance from portfolio.
-		$sql="UPDATE portfolio SET balance='$difference' WHERE uid='$usrid'";
+		$sql="UPDATE users SET balance='$difference' WHERE id='$usrid'";
 		if((mysqli_query($con,$sql))==FALSE)
 		  {
 		    $flag->noerror=FALSE;
@@ -76,11 +75,13 @@ if(preg_match($regex,$symbol))
 		     * If the stock symbol is NOT in the stock=> Would require insertion of new 
 		     * stock record in the stock table + corresponding id should also be added to the portfolio.
 		     */
-		    $sql1="SELECT symbol FROM stock WHERE symbol='$symbol'";
-		    if(mysqli_num_rows(mysqli_query($con,$sql1))==1)
+		    $sql1="SELECT symbol,id FROM portfolio WHERE symbol='$symbol' AND uid='$usrid'";
+		    $result1=mysqli_query($con,$sql1);
+		    if(mysqli_num_rows($result1)==1)
 		      {
 			// Means database already has that symbol stock in it. So simply add                            $stockamt to number
-			if(mysqli_query($con,"UPDATE stock SET number=number+'$stockamt'")==FALSE)
+			$row=mysqli_fetch_array($result1);
+			if(mysqli_query($con,"UPDATE portfolio SET quantity=quantity+'$stockamt' WHERE id='$row[1]'")==FALSE)
 			  {
 			    $flag->noerror=false;
 			    mysqli_rollback($con);
@@ -89,10 +90,9 @@ if(preg_match($regex,$symbol))
 		    else
 		      {
 			/* In this case, insert new record for this stock symbol into the 
-                         * stock table
-			 * also add the id field to the stockid field in the portfolio table
+                         * portfolio table
 			 */
-			$sql="INSERT INTO stock(symbol,number) VALUES('$symbol','$stockamt')";
+			$sql="INSERT INTO portfolio(uid,symbol,quantity) VALUES('$usrid','$symbol','$stockamt')";
 			if(mysqli_query($con,$sql)==FALSE)
 			  {
 			    $flag->noerror=false;
@@ -101,17 +101,6 @@ if(preg_match($regex,$symbol))
 			else
 			  {
 			    $flag->noerror=true;
-			    $lastid=mysqli_insert_id($con);
-			    $sql="UPDATE portfolio SET stockid='$lastid' WHERE uid='$usrid'";
-			    if(mysqli_query($con,$sql)==FALSE)
-			      {
-				$flag->noerror=FALSE;
-				mysqli_rollback($con);
-			      }
-			    else
-			      {
-				$flag->noerror=true;
-			      }
 			  }
 		      }
 		  }
@@ -119,6 +108,7 @@ if(preg_match($regex,$symbol))
 	  }
       }
   }
+
 if($flag->noerror==true)
   {
     mysqli_commit($con);

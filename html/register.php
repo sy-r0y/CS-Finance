@@ -1,11 +1,7 @@
 <?php
 
-// Include the config file.
-require_once("../includes/config.php");
+require_once("../includes/config.php");// Include the config file.
 //If user is already logged in -> simply redirect to his portfolio.
-//$_SESSION["id"]=1;
-//session_destroy();
-
 if(isset($_SESSION['id']) || !empty($_SESSION['id']))
 	 {
 	   redirect("portfolio.php");
@@ -14,20 +10,16 @@ if(isset($_SESSION['id']) || !empty($_SESSION['id']))
 	   // Also we do not want for any of the rest of the code in this page to execute-> so we exit().
 	   exit();
 	 }
-//require("includes/header.php");  
-
 ?>
-
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8"> 
  <title> FINANCE-Register </title>
  <link rel="stylesheet" href="" type="text/css" media=""/>   
- <script src="scripts/yahoo-min.js"></script> 
-  <script src="scripts/event-min.js"></script> 
-  <script src="scripts/connection-min.js"></script> 
-
+ <script src="../scripts/yahoo-min.js"></script> 
+  <script src="../scripts/event-min.js"></script> 
+  <script src="../scripts/connection-min.js"></script> 
   <script>
    /* For JS=> We would :-
       1. Validate- email, password & confirm password fields
@@ -38,23 +30,16 @@ if(isset($_SESSION['id']) || !empty($_SESSION['id']))
          If user not exists=> We're Cool !!!
 	 If We're Cool(Which we are!!)=> Insert data into the database(i.e Create a new row)
    */
-
 function validate()
    {
-
      var userinput=true;
-
      var nameinput=document.getElementById("username").value;
      var emailinput=document.getElementById("email").value;
      var passinput=document.getElementById("passw").value;
      var passconfinput=document.getElementById("passconf").value;
-
      var unamerex=/[a-z0-9._\-]{2,}$/i;
-
      var emailrex=/[a-z0-9._\-]+@[a-z0-9][a-z0-9.\-]*[\.]{1}[a-z]{2,4}$/i;
-
      var passrex=/.*(?=.{6})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$/;
-
      //Did the user properly fill 'username','email','password','confirm password' field(i.e blank, constraints etc)
 
      if((nameinput=="") || (!unamerex.test(nameinput)))
@@ -112,17 +97,12 @@ function validate()
 	 document.getElementById("fourth").style.color="black";
        }
      
-     // Return the "username" flag.
-     //    return (userinput);
-     
      if(userinput)
        {
-	 //	 alert("HELLO BABY");
 	 register();
        }
      return false;
    }
-
 function register()
 {
   var nameinp=encodeURIComponent(document.getElementById("username").value);
@@ -130,22 +110,17 @@ function register()
   var passinp=encodeURIComponent(document.getElementById("passw").value);
   var postData="username="+nameinp+"&email="+emailinp+"&passw="+passinp;
   var url="../etc/register2.php"; 
-  
   YAHOO.util.Connect.initHeader("Content-Type","text/html; charset=utf-8");
-  
   YAHOO.util.Connect.asyncRequest('POST',url,{success:handler},postData);
 }
 function handler(o)
 {
   var response=eval("("+o.responseText+")");
-  
   // Now that we have the JSON in the 'response', we can access the data using "Dot Notatin".
-  
   if(response.sanitized===false)
     {
       document.getElementById("error").innerHTML="INVALID FIELDS ENTERED";
       document.getElementById("username").focus();
-      
     }
   
   else if(response.noconflict===false)
@@ -162,9 +137,8 @@ function handler(o)
     {
       // Meaning everything is cool...so redirect user to his portfolio.
       window.location="./portfolio.php";
-      exit; // Since we used header() --> We need to make sure no exra code 'below' this one is "executed".
+      //      exit; // Since we used header() --> We need to make sure no exra code 'below' this one is "executed".
     }
-  
 }
 </script>
 </head>
@@ -185,43 +159,29 @@ function handler(o)
  <form name="regform" method="post" onsubmit="return validate(); return false;">
 <table>
      <tbody>
-
       <tr>
-       <td><span id="first">Name :</span></td>
-       <td><input type="text" id="username" name="username" size="40" maxlength="50"/></td>
+       <td><span id="first">Email :</span></td>
+       <td><input type="text" id="email" name="email" size="40" maxlength="50"/></td>
       </tr>
-
       <tr>
-
- <td><span id="second">Email :</span></td>
-   <td><input type="text" id="email" name="email" size="40" maxlength="40"/></td>
+    <td><span id="second">Password :</span></td>
+   <td><input type="text" id="passw" name="passw" size="40" maxlength="40"/></td>
    </tr>
-
    <tr>
-   <td><span id="third">Password :</span></td>
-   <td><input type="password" name="passw" id="passw" size="40" maxlength="50"/></td>
-   </tr>
-
-   <tr>
-
    <td><span id="fourth">Confirm Password :</span></td>
    <td><input type="password" id="passconf" name="passconf" size="40" maxlength="50"/></td>
    </tr>
-
 <tr>
 <td></td>
 <td><input type="submit" value="REgister"/> </td>
 </tr>
   </tbody>
    </table>
-
   </form>
 </div>
 <br/><br/>
 <div id="error"></div>
 </div>
-
 <?php 
-
     require("/includes/footer.html");
 ?>

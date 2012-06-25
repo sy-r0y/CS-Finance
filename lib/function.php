@@ -80,14 +80,14 @@ function redirect($destination)
 function userName($usrid)
 {
   $con=open_mysqli_conn();
-  $sql="SELECT email from user WHERE id='$usrid'";
+  $sql="SELECT email from users WHERE id='$usrid'";
   $result=mysqli_fetch_array(mysqli_query($con,$sql));
   return $result[0];
 }
 function getBalance($usrid)
 {
   $con=open_mysqli_conn();
-  $sql="SELECT balance FROM portfolio WHERE uid='$usrid'";
+  $sql="SELECT balance FROM users WHERE id='$usrid'";
   $result=mysqli_fetch_array(mysqli_query($con,$sql));
   return $result[0];
 }
