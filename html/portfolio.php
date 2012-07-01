@@ -1,14 +1,11 @@
 <?php
-
 require("../includes/config2.php");
-
 if((!isset($_SESSION['id'])) || (empty($_SESSION['id'])))
   {
     // Since user NOT logged in => redirect user to the index.php
     redirect("index.php");
   }
 ?>
-
 <?php
 $usrid=$_SESSION['id'];
 require("./header2.html");
@@ -19,11 +16,9 @@ require("./header2.html");
  */
 </script>
 </head>
-
 <?php
 require("./bodyheader.php");
 ?>
-
 <!-- Now on to the content of the page=> will contain the users portfolio(in a tabluar format) -->
 <br/><br/>
 <div id="content">
@@ -33,7 +28,7 @@ require("./bodyheader.php");
   <table id="usertable" border="0" class="usrtable">
   <tbody>
   <tr> <td> Email Id :</td> <td><b><?php print(userName($usrid));?></b></td> </tr>
-  <tr> <td> Credit Balance :</td><td><b><?php print(getBalance($usrid));?></b></td></tr>
+  <tr> <td> Credit Balance :</td><td><b><?php print($balance=getBalance($usrid));?></b></td></tr>
   </tbody>
   </table>
 </div>
@@ -42,78 +37,45 @@ require("./bodyheader.php");
   <!-- The table here will display the user\'s stock details -->
   <table class="stocktable" border="1">
    <thead><tr><th> Name </th> <th> Shares </th> <th> Value </th> </tr> </thead>
-
-
      <!-- The body portion will hava a LOOP to iterate over the user\'s stock. -->
      <!-- Can call a fucntion that will define the query to the database => and will then "return" the result-->
-     <!-- While in the the loop=> USE 'mysqli_num_rows()'-->
-
+     <!-- While in the the loop=> USE 'mysqli_fetch_array()'-->
    <tbody>
-<!--  //  $result=getStock(); // getStock() will return the results of the mysql_query(). 
--->
-  <!-- // IMPORTANT => for initial version -> lets test whether everything works cool by doing everything in the same page=> i.e NO USE OF FUNCTIONS===>> use fucntion approach after everything workds cool.  
-
--->
-
-<?php  $sql="SELECT * FROM stock WHERE stock.id=portfolio.stockid";      
-?>
-<!--  /*
-
-mysql_connect(localhost,$username,$password);
-@mysql_select_db($database) or die( "Unable to select database");
-$query="SELECT * FROM tablename";
-$result=mysql_query($query);
-
+<?php 
+  $sum_qty=0;
+$sum_val=0;
+$sql="SELECT symbol,quantity FROM portfolio WHERE uid='$usrid'";
+$result=mysqli_query($con,$sql);
 $num=mysqli_num_rows($result);
-
-mysql_close();
-?>
-<table border="0" cellspacing="2" cellpadding="2">
-<tr>
-<td><font face="Arial, Helvetica, sans-serif">Value1</font></td>
-<td><font face="Arial, Helvetica, sans-serif">Value2</font></td>
-<td><font face="Arial, Helvetica, sans-serif">Value3</font></td>
-<td><font face="Arial, Helvetica, sans-serif">Value4</font></td>
-<td><font face="Arial, Helvetica, sans-serif">Value5</font></td>
-</tr>
-
-<?php
-$i=0;
-while ($i < $num) {
-
-$f1=mysql_result($result,$i,"field1");
-$f2=mysql_result($result,$i,"field2");
-$f3=mysql_result($result,$i,"field3");
-$f4=mysql_result($result,$i,"field4");
-$f5=mysql_result($result,$i,"field5");
-?>
-
-<tr>
-<td><font face="Arial, Helvetica, sans-serif"><?php echo $f1; ?></font></td>
-<td><font face="Arial, Helvetica, sans-serif"><?php echo $f2; ?></font></td>
-<td><font face="Arial, Helvetica, sans-serif"><?php echo $f3; ?></font></td>
-<td><font face="Arial, Helvetica, sans-serif"><?php echo $f4; ?></font></td>
-<td><font face="Arial, Helvetica, sans-serif"><?php echo $f5; ?></font></td>
-</tr>
-
-<?php
-  $i++;
-}
-?>
-</body>
-</html>
-------------------------
-
-
-  */
--->
-    <tr>
-     <td>
-     </td>
+while($row=mysqli_fetch_array($result))
+  {
+    ?>    <tr>
+        <td>
+         <?php $name=getName($row[0]);
+               print($name);
+         ?>&nbsp
+        </td>
+	<td>
+	   <? print($row[1]);
+      	      $sum_qty+=$row[1];
+	   ?>
+        &nbsp
+        </td>
+        <? $total_value=getValue($row[0],$row[1]);?>
+	<td> <? print($total_value);
+	      $sum_val+=$total_value;  ?>
+  	</td>						     
+     </tr>
+   <? } ?>
     </tr>
    </tbody>
-   <tfoot> <tr> <td>&nbsp </td> <td> </td> </tr> </tfoot>
+    <tfoot> 
+     <tr>
+      <td><b>Total</b>&nbsp</td><td><b><?print($sum_qty);?></b></td><td><b><?print($sum_val)?></b></td> 
+     </tr>
+    </tfoot>
   </table>
+      <b> Your Total Net Worth : Rs. <? print($balance+$sum_val) ?> </b>
 </div>
 </body>
 </html>

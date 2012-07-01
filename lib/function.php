@@ -146,47 +146,48 @@ function lookup($symbol)
 
   // Instantiate a stock object.
   $stock=new Stock();
-
+  // Remember stock's symbol and trade details => this information is to be sent back to lookup.php
+  $stock->symbol=$data[0];
+  $stock->name=$data[1]; 
+  $stock->price=$data[2];
+  //	  $stock->time=strtotime($data[3]." ".$data[4]);
+  $stock->change=$data[5];
+  $stock->open=$data[6];
+  $stock->high=$data[7];
+  $stock->low=$data[8];
   
-  /*//define("YAHOO", "http://download.finance.yahoo.com/d/quotes.csv?f=snl1d1t1c1ohg&s=");
-  $handle=@fopen("http://download.finance.yahoo.com/d/quotes.csv?s=".$symbol."&f=snl1d1t1c1ohg","r");
-  if($handle===false)
-    {
-      return NULL;
-    }
-  else
+  // Return the stock object(if everything went alright).
+  return $stock;
+}
+
+function getName($symbol)
+{
+  // define("YAHOO", "http://download.finance.yahoo.com/d/quotes.csv?f=snl1d1t1c1ohg&s=");
+  /*
+  **snl1d1t1c1ohg**  sn**d1**l1**s**n**t1**c1**o
+l1=Last Trade (Price Only)
+l=Last Trade (Price and Time)
+   */
+  $handle=@fopen("http://download.finance.yahoo.com/d/quotes.csv?f=n&s=".$symbol,"r");
+  if($handle!==FALSE)
     {
       $data=fgetcsv($handle);
-      if($data===false || count($data)==1)
-	{
-	  return NULL;
-	}
-      else
-	{
-	  
-  	  // Close the connection to YAHOO.
-	  //	  fclose($fp);
-
-	  fclose($handle);
-
-  
-	  // Ensure $symbol was found.
-	  if($data[2]==0.00)
-	    {  // echo "HELLO11"; 
-	      return NULL;
-	    }
-  */	  
-	  
-	  // Remember stock's symbol and trade details => this information is to be sent back to lookup.php
-	  $stock->symbol=$data[0];
-	  $stock->name=$data[1]; 
-	  $stock->price=$data[2];
-	  //	  $stock->time=strtotime($data[3]." ".$data[4]);
-	  $stock->change=$data[5];
-	  $stock->open=$data[6];
-	  $stock->high=$data[7];
-	  $stock->low=$data[8];
-	  
-	  // Return the stock object(if everything went alright).
-	  return $stock;
+      if($data!==FALSE)
+	return($data[0]);
+      fclose($handle);
+    }
+}
+function getValue($symbol,$quantity)
+{
+  $handle=fopen("http://download.finance.yahoo.com/d/quotes.csv?f=l1&s=".$symbol,"r");
+  if($handle!==FALSE)
+      {
+	$price=fgetcsv($handle);
+	if($price!==FALSE)
+  	{
+	  $totalvalue=$price[0]*$quantity;	  
+	  return($totalvalue);
+  	}	
+      fclose($handle);
+      }
 }
