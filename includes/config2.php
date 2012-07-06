@@ -27,5 +27,4 @@ require("../lib/function.php");
 $con=open_mysqli_conn();  // This is a function that is defined in the function.php.
 
 session_start();  // Also start the session.
-
 ?>

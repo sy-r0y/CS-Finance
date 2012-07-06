@@ -34,7 +34,6 @@ if((!isset($_SESSION['id'])) || (empty($_SESSION['id'])))
 <?php
 require("./header2.html");  // Header Template.
 ?>
-
 <script>
 
  /* All the JS that would be needed for the lookup.php ( for AJAX , hiding/showing elements ...etc). */
@@ -49,9 +48,6 @@ var price=0; // Global Variable.
 var stocksymbol=null; // Global variable.
 function getDetail()
 {
-
-  alert("Inside getDetail()");
-
   // This funtion will perfomr some validation(on the symbol entered)
   // Also it will take the symbol value-> and pass it through AJAX to lookup2.php
   /* Should we use UTF-8 encoding OR simply pass the      * symbol information as text.
@@ -70,10 +66,7 @@ function getDetail()
     }
   else
     {
-      alert("Inside else- getDetail()");
-
       var url="../etc/lookup2.php"; 
-                                    
       var postData="symboltxt="+symbol;
       document.getElementById('symblspan').style.color="black";
       YAHOO.util.Connect.initHeader("Content-Type","text/html;charset=utf-8");
@@ -90,12 +83,8 @@ function handler(o)
    * and then simply display the results of the result in the table inside <div id=detail> (after setting its 
    * display property to block).
    */
-  alert("Inside handler()");
-
   var response=eval("("+o.responseText+")");
-
   //Now that we have our JSON in the response object => we can access the fields using Dot Notation.
-
   if(response.noerror)
     {
       // Everything is cool i.e We can display the data received in the JSON formate in the table.
@@ -139,15 +128,12 @@ function buyStock()
    * If transaction was not successful ==>> tell the user this as an error message.
    * COOOLLL!!!!!
    */
-  alert("Inside buyStock()");
   var usrinput=true;
   var stock=document.getElementById("qty").value;
   var regex=/^(0|[1-9][0-9]*)$/;  // Only allow Numerical input.
 
   if((regex.test(stock))&&(stock>=1)&&(stock<=200))
     {
-
-      alert("buyStock()- Test Pass HOHO");
       /* Since the amount of stock that the uesr wants to buy is now 'Sanitized'==>>
        * Issue an AJAX request that will send, in its postData the "symbol" 
        * and the "stock" field to buy.php
@@ -192,7 +178,6 @@ function buyStock()
     }
   else
     {
-      alert("buyStock()- Test Fail");
       // if condition failed=> Means the stock amt, user entered, is not valid.
       document.getElementById("qty").focus();
       document.getElementById("label-span").style.color="red";
@@ -207,14 +192,12 @@ function buyStock()
 function handler2(d)
 {
   //handler2() will take care of the AJAX response that buy.php will send back.
-  alert("handler2()- buyStock()");
   var response=eval("("+d.responseText+")");
-  alert(response.qtyvalid);
+  //  alert(response.qtyvalid);
   if(response.noerror)
     {
       var qty=document.getElementById('qty').value;
       var syml=document.getElementById('symbltxt').value;
-      //      var =document.getElementById('td3').value;
       var totalamt=qty*price;
       document.getElementById("detail").style.display="none";
       document.getElementById("bought").style.display="block";
@@ -225,14 +208,19 @@ function handler2(d)
     }
   else
     {
-      alert("FAILED");
+      if(!(response.balsufficient))
+	{
+	  alert(" You don't have sufficient Credit Balance !!");
+	}
+      else
+	{
+	  alert(" Some Error Occured...could not complete transaction ");
+	}
     }
 }
 </script> 
 </head>
-
 <?php require("./bodyheader.php"); ?>
-
 <br/><br/>
 <div name="wrapper" id="wrapper">
 
@@ -296,7 +284,10 @@ function handler2(d)
 <div id="error" style="display:none"></div>
  
  </div> <!-- Div wrapper Ends -->
-
+<br/><br/><br/>
+<div align="center" sytle="padding-top:10px">
+  <a href="portfolio.php"><button class="button"> PORTFOLIO </button></a>
+</div><br/>
 <?php 
   require("./footer.html");
 ?>

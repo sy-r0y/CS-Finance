@@ -1,5 +1,4 @@
 <?php
-
 require_once("../includes/config.php");// Include the config file.
 //If user is already logged in -> simply redirect to his portfolio.
 if(isset($_SESSION['id']) || !empty($_SESSION['id']))
@@ -7,15 +6,14 @@ if(isset($_SESSION['id']) || !empty($_SESSION['id']))
 	   redirect("portfolio.php");
 	   /* The argument passed here -"portfolio.php" is appended to already defined code inside the                      * redirect() and allows us to specify exactly where we want the redirection to end up.
 	   */    
-	   // Also we do not want for any of the rest of the code in this page to execute-> so we exit().
 	   exit();
 	 }
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8"> 
- <title> FINANCE-Register </title>
+ <title> Finance-Register </title>
  <link rel="stylesheet" href="" type="text/css" media=""/>   
  <script src="../scripts/yahoo-min.js"></script> 
   <script src="../scripts/event-min.js"></script> 
@@ -33,16 +31,15 @@ if(isset($_SESSION['id']) || !empty($_SESSION['id']))
 function validate()
    {
      var userinput=true;
-     var nameinput=document.getElementById("username").value;
+     //     var nameinput=document.getElementById("username").value;
      var emailinput=document.getElementById("email").value;
      var passinput=document.getElementById("passw").value;
      var passconfinput=document.getElementById("passconf").value;
-     var unamerex=/[a-z0-9._\-]{2,}$/i;
+     //     var unamerex=/[a-z0-9._\-]{2,}$/i;
      var emailrex=/[a-z0-9._\-]+@[a-z0-9][a-z0-9.\-]*[\.]{1}[a-z]{2,4}$/i;
      var passrex=/.*(?=.{6})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$/;
      //Did the user properly fill 'username','email','password','confirm password' field(i.e blank, constraints etc)
-
-     if((nameinput=="") || (!unamerex.test(nameinput)))
+     /*     if((nameinput=="") || (!unamerex.test(nameinput)))
       {
 	document.getElementById("first").style.color="red";
 	document.getElementById("username").focus();
@@ -51,26 +48,20 @@ function validate()
      else
       {
 	document.getElementById("first").style.color="black";
-      }
+	}*/
      if((emailinput=="") || (!emailrex.test(emailinput)))
        {
-	 document.getElementById("second").style.color="red";
-	 if(userinput)
-	   {
-	     document.getElementById("email").focus();
-	   }
+	 document.getElementById("first").style.color="red";
+	 document.getElementById("email").focus();
 	 userinput=false;
-	 
        }
-     // If the username field is not blank
      else
        {
-	 document.getElementById("second").style.color="black";
+	 document.getElementById("first").style.color="black";
        }
-     
      if((passinput=="") || (!passrex.test(passinput)))
        {
-	 document.getElementById("third").style.color="red";
+	 document.getElementById("second").style.color="red";
 	 if(userinput) 
 	   {
 	     document.getElementById("passw").focus(); 
@@ -80,12 +71,11 @@ function validate()
      //If the password field is not blank.
      else
        {
-	 document.getElementById("third").style.color="black";
+	 document.getElementById("second").style.color="black";
        }
-     
      if((passconfinput=="") || (passconfinput!=passinput))
        {
-	 document.getElementById("fourth").style.color="red";
+	 document.getElementById("third").style.color="red";
 	 if(userinput)
 	   {
 	     document.getElementById("passconf").focus();
@@ -94,9 +84,8 @@ function validate()
        }
      else
        {
-	 document.getElementById("fourth").style.color="black";
+	 document.getElementById("third").style.color="black";
        }
-     
      if(userinput)
        {
 	 register();
@@ -105,10 +94,9 @@ function validate()
    }
 function register()
 {
-  var nameinp=encodeURIComponent(document.getElementById("username").value);
   var emailinp=encodeURIComponent(document.getElementById("email").value);
   var passinp=encodeURIComponent(document.getElementById("passw").value);
-  var postData="username="+nameinp+"&email="+emailinp+"&passw="+passinp;
+  var postData="email="+emailinp+"&passw="+passinp;
   var url="../etc/register2.php"; 
   YAHOO.util.Connect.initHeader("Content-Type","text/html; charset=utf-8");
   YAHOO.util.Connect.asyncRequest('POST',url,{success:handler},postData);
@@ -116,13 +104,12 @@ function register()
 function handler(o)
 {
   var response=eval("("+o.responseText+")");
-  // Now that we have the JSON in the 'response', we can access the data using "Dot Notatin".
+  // Now that we have the JSON in the 'response', we can access the data using "Dot Notation".
   if(response.sanitized===false)
     {
       document.getElementById("error").innerHTML="INVALID FIELDS ENTERED";
       document.getElementById("username").focus();
     }
-  
   else if(response.noconflict===false)
     {
       document.getElementById("error").innerHTML="Email Address Already Exists !!!";
@@ -135,9 +122,8 @@ function handler(o)
     }
   else
     {
-      // Meaning everything is cool...so redirect user to his portfolio.
+      // Meaning everything is cool...so redirect user to portfolio.
       window.location="./portfolio.php";
-      //      exit; // Since we used header() --> We need to make sure no exra code 'below' this one is "executed".
     }
 }
 </script>
@@ -155,7 +141,6 @@ function handler(o)
 </div>
 <div id="middle">
  <div id="registerform">
-
  <form name="regform" method="post" onsubmit="return validate(); return false;">
 <table>
      <tbody>
@@ -165,10 +150,10 @@ function handler(o)
       </tr>
       <tr>
     <td><span id="second">Password :</span></td>
-   <td><input type="text" id="passw" name="passw" size="40" maxlength="40"/></td>
+   <td><input type="password" id="passw" name="passw" size="40" maxlength="40"/></td>
    </tr>
    <tr>
-   <td><span id="fourth">Confirm Password :</span></td>
+   <td><span id="third">Confirm Password :</span></td>
    <td><input type="password" id="passconf" name="passconf" size="40" maxlength="50"/></td>
    </tr>
 <tr>
@@ -183,5 +168,5 @@ function handler(o)
 <div id="error"></div>
 </div>
 <?php 
-    require("/includes/footer.html");
+    require("footer.html");
 ?>

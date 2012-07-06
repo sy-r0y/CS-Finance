@@ -36,17 +36,16 @@ require("./bodyheader.php");
 <div id="stock">
   <!-- The table here will display the user\'s stock details -->
   <table class="stocktable" border="1">
-   <thead><tr><th> Name </th> <th> Shares </th> <th> Value </th> </tr> </thead>
+  <thead><tr><th> Name </th> <th> Shares </th> <th> Value(Rs.) </th> </tr> </thead>
      <!-- The body portion will hava a LOOP to iterate over the user\'s stock. -->
      <!-- Can call a fucntion that will define the query to the database => and will then "return" the result-->
      <!-- While in the the loop=> USE 'mysqli_fetch_array()'-->
    <tbody>
 <?php 
-  $sum_qty=0;
+$sum_qty=0;
 $sum_val=0;
 $sql="SELECT symbol,quantity FROM portfolio WHERE uid='$usrid'";
 $result=mysqli_query($con,$sql);
-$num=mysqli_num_rows($result);
 while($row=mysqli_fetch_array($result))
   {
     ?>    <tr>
@@ -77,5 +76,11 @@ while($row=mysqli_fetch_array($result))
   </table>
       <b> Your Total Net Worth : Rs. <? print($balance+$sum_val) ?> </b>
 </div>
-</body>
-</html>
+<br/><br/><br/>
+<div align="center" style="padding-top:10px">
+  <a href="lookup.php"><button class="button"> BUY SHARES </button></a>
+  <a href="sell.php"><button class="button"> SELL SHARES </button></a>
+</div>
+<?php
+      require("footer.html");
+?>

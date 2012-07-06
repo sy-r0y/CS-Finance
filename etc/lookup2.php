@@ -14,7 +14,6 @@
  }
 
 require("../includes/config2.php");
-       
 header("Content-type:application/json");
 /* This is the "interceptor" page that will receive the "Symbol" from the "lookup.php" and then query the Yahoo 
    Finance page with that.
@@ -29,22 +28,13 @@ header("Content-type:application/json");
 
 /* Here I will receive the symboltxt from the lookup.php via AJAX POST request and then pass that symbol to a      function lookup($symbol) =>> This function will query the YAHOOO finance website.
    
- * The  csv received would be parsed using the fgetcsv() and furhter actions will be based upong the condition:
- *  1. If proper symbol and proper response received (i.e
- *  2. 
- *  3. 
-
+ * The  csv received would be parsed using the fgetcsv() and further actions will be based upon certain conditions.
  */
 
-       //$symbol=mysqli_real_escape_string($con,$_GET['symboltxt']);
-$symbol=mysqli_real_escape_string($con,$_POST['symboltxt']);
-
-//$quantity=mysqli_real_escape_string($con,$_GET['qty']);
-//$quantity=mysqli_real_escape_string($con,$_POST['qty']);
-
-$lookup2=lookup($symbol); // $lookup2 has the object $stock returned by the function.
 
 $flag=new Flag();
+$symbol=mysqli_real_escape_string($con,$_POST['symboltxt']);
+$lookup2=lookup($symbol); // $lookup2 has the object $stock returned by the function.
 
 if(($lookup2)===NULL)
   {
@@ -53,7 +43,7 @@ if(($lookup2)===NULL)
   }    
 else
   {
-    // If everything went alright and we got proper data fields from the function lookup().
+    // If everything's cool and we got proper data fields from the function lookup().
     $flag->noerror=true;
     $flag->symbol=$lookup2->symbol;
     $flag->name=$lookup2->name;
@@ -61,10 +51,8 @@ else
     $flag->change=$lookup2->change;
     $flag->high=$lookup2->high;
     $flag->low=$lookup2->low;
-
   }
 
 // Now simply return the $flag object to lookup.php
 print(json_encode($flag));
-
 ?>

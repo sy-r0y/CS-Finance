@@ -1,4 +1,3 @@
-
 <?php
 /* This page will act as the interceptor to the lookup.php's module "buyStock()"
  * lookup.php will issue an AJAX request that will transfer the "symbol" + "stockamt" + ""
@@ -7,7 +6,6 @@
  * send a JSON encoded response back to lookup.php
  */
 require("../includes/config2.php");
-
 class Flag
 {
   public $symbolvalid=false;

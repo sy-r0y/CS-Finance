@@ -1,15 +1,10 @@
 <?php
-
-
 require("../includes/config2.php");
-
 if((isset($_SESSION['id'])) || (!empty($_SESSION['id'])))
   {
     redirect("portfolio.php");     // Since user NOT logged in => redirect user to the index.php
   }
-
 ?>
-
 <!--
  This will be the landing page....so login would be done from this.
  user wants to register, he will have to click on the 'Sign-Up' button, on the page header.
@@ -29,16 +24,12 @@ if((isset($_SESSION['id'])) || (!empty($_SESSION['id'])))
    */
  function validate()
    {
-
     var userinput=true;
     var emailinput=document.getElementById("uname").value;
     var passinput=document.getElementById("pswd").value;
     var userrg=/[a-z0-9._\-]+@[a-z0-9][a-z0-9.\-]*[\.]{1}[a-z]{2,4}$/i;
-
     var passrg=/.*(?=.{6})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$/;
-
     // \W => ILLEGAL CHARS(whitepace, tabs, newline+ ALSO #$#$#$# etc etc),So we have 'negated' the @#%^&*.
-    
     //Did the user left the username field blank?
     if((emailinput=="")|| (!userrg.test(emailinput)))
      {
@@ -65,8 +56,7 @@ if((isset($_SESSION['id'])) || (!empty($_SESSION['id'])))
     else
       {
 	document.getElementById("passspan").style.color="black";
-      }
-    
+      }  
     if(userinput)
      {
     	authenticate();
@@ -88,26 +78,18 @@ function handler(o)
    * 1. SET(ie 1) => redirect user to portfolio.php and set $_SESSION["id"] to TRUE
    * 2. NOT SET(ie 0) => highlight the fields and display that "INVALID LOGIN".
   */
-
   var response=eval("("+o.responseText+")");
-  
   // Now that we have the JSON in the 'response', we can access the data using "Dot Notatin".
   if(response.authentic===false)
     {
-      document.getElementById("error").innerHTML="INVALID LOGNdfdfdf";
-      //      alert("invalid login");
+      var err=document.getElementById("error");
+      err.style.color="red";
+      err.innerHTML="INVALID LOGIN !!";
       document.getElementById("uname").focus();
-      //      document.getElementById("error").appendChild(div);
-      //      document.getElementById("error").style.color="red";
     }
   else if(response.authentic===true)
     {
       // Redirect the user to "portfolio.php"
-      // Use the function "redirect", defined in the function.php".
-      //      redirect("portfolio.php");
-      // MAY ALSO be able to use the header(Location:"portfolio.php"); function.
-      //header("Location:portfolio.php");
-      alert("successful login");
       window.location="./portfolio.php";
     }
 }
@@ -123,11 +105,14 @@ function handler(o)
  </div>
  <div id="middle" >
    <br/><br/>
-   
-   <!-- THE LOGIN FORM WILL ASK THE USER FOR "username" & "password" and on validation+ succesful authentication        redirect him to his "portfolio". -->
-
+   <!-- THE LOGIN FORM WILL ASK THE USER FOR "email" & "password" and on validation+ succesful authentication        redirect him to his "portfolio". -->
    <form name="loginform" method="POST" action="" onsubmit="return validate();return false;" accept-charset="utf-8">
-     <!-- Clearly we need to "VALIDATE" the user input on the clientside & on succesful "validation" sen          d the form details to an intercepting php page(AJAX), this "intercepting" page will defensively check          received field details and authenticate accordingly....if succesful authenticatin occurs, the user is           redirected from the index form(where he currently is. But if invalid authenticatin occurs => then thru           AJAX user is notified of this inauthentication.
+     <!-- Clearly we need to "VALIDATE" the user input on the clientside & on 
+     succesful "validation" send the form details to an intercepting php page(AJAX), 
+     this "intercepting" page will defensively check received field details and 
+     authenticate accordingly....if succesful authenticatin occurs, the user is 
+     redirected from the index form(where he currently is. But if invalid authenticatin
+     occurs => then thru AJAX user is notified of this inauthentication.
       -->
      <div id="logindetails">
        <br/><br/>

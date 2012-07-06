@@ -2,81 +2,52 @@
 
 // This file will contain all the "predefined" functions that will be used in our project.
 
-
-  
-
 function open_db_conn()
 {
   // Connect to the Database.
-
-
   $con=mysql_connect(HOST,USER,PASS);
   mysql_set_charset("utf8");
-
-
   //  if(($con=mysql_connect(HOST,USER,PASS))===FALSE)
   if($con===FALSE)  
   {
       exit(" COULD NOT CONNECT TO DB" );
   }
   //  mysql_set_charset("utf8");
-
   if(mysql_select_db(DB_NAME,$con)===FALSE)
     {
       exit("COULD NOT SELECT DB");
     }
   return $con;
 }
-
 function open_mysqli_conn()
 {
   // Connect to the Database.
-
-
   /*  mysqli mysqli_connect ( [string host [, string username [, string passwd [, string dbname [, int port 
                               [, string socket]]]]]] )
    */
-
   $con=mysqli_connect(HOST,USER,PASS,DB_NAME);
   mysqli_set_charset($con,"utf8");
-
-  //  if(($con=mysql_connect(HOST,USER,PASS))===FALSE)
   if($con===FALSE)  
   {
       exit(" COULD NOT CONNECT TO DB" );
   }
-
   mysqli_autocommit($con,FALSE); // Make sure that mysql doesn't automatically start committing any changes.
 
   /*
     // Since mysqli already connects to the database through the connect() --> the following is "Redundant" and    //  also Depracated(I assume..!!! ;D )
-
-    if(mysql_select_db(DB_NAME,$con)===FALSE)
-    {
-      exit("COULD NOT SELECT DB");
-    }
   */
-  
   return $con;
 }
-
 // Functin to "redirect" users to the page specified in the argument.
 function redirect($destination)
 {
-  //  echo "HELLO ";
-  //  print($_SERVER['HTTP_HOST']);
-  //  print($_SERVER['PHP_SELF']);
-
-
   // Redirect the user to a different page in the current directory.
   /* Redirect to a different page in the current directory that was requested */
-
     $host=$_SERVER['HTTP_HOST'];
     $uri=rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
     header("Location: http://$host$uri/$destination");
   exit;
 }
-
 function userName($usrid)
 {
   $con=open_mysqli_conn();
@@ -91,34 +62,25 @@ function getBalance($usrid)
   $result=mysqli_fetch_array(mysqli_query($con,$sql));
   return $result[0];
 }
-
 function lookup($symbol)
 {
-
   /* lookup($symbol)
    * Returns a stock by its symbol(Case-Insenstively) else NULL if not found.
   */
-
  class Stock
  {
-
    public $symbol;
    public $name=NULL;
    public $price=NULL;
-   //   public $time=NULL;
    public $change=NULL;
-   //   public $open=NULL;
    public $high=NULL;
    public $low=NULL;
  }
-
-
   // Reject $symbol that start with \^.
     if(preg_match("/^\^/",$symbol))
       {
       	return NULL;
       }
-
   // Reject $symbol that contain commas.
   if(preg_match("/,/",$symbol))
     {
@@ -150,21 +112,17 @@ function lookup($symbol)
   $stock->symbol=$data[0];
   $stock->name=$data[1]; 
   $stock->price=$data[2];
-  //	  $stock->time=strtotime($data[3]." ".$data[4]);
   $stock->change=$data[5];
   $stock->open=$data[6];
   $stock->high=$data[7];
   $stock->low=$data[8];
-  
   // Return the stock object(if everything went alright).
   return $stock;
 }
 
 function getName($symbol)
 {
-  // define("YAHOO", "http://download.finance.yahoo.com/d/quotes.csv?f=snl1d1t1c1ohg&s=");
-  /*
-  **snl1d1t1c1ohg**  sn**d1**l1**s**n**t1**c1**o
+  /* define("YAHOO", "http://download.finance.yahoo.com/d/quotes.csv?f=snl1d1t1c1ohg&s=");
 l1=Last Trade (Price Only)
 l=Last Trade (Price and Time)
    */
